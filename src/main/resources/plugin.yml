@@ -1,11 +1,20 @@
 name: FistPlugin
 version: 1.0.0
-main: me.sdmine.fistplugin.FistPlugin
-api-version: 1.21
+main: com.yourname.fistplugin.FistPlugin
+api-version: "1.21"
+author: YourName
+description: A powerful fist abilities plugin
 
 commands:
   fist:
-    usage: /fist
-    description: Main fist command
-    permission: fist.admin
-    
+    description: Main fist plugin command
+    usage: /fist <give|remove|list|info|clearall|reload>
+    permission: fist.use
+
+permissions:
+  fist.use:
+    description: Use fist commands
+    default: true
+  fist.admin:
+    description: Admin commands for fist plugin
+    default: op
