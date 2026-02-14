@@ -1,20 +1,28 @@
 name: FistPlugin
 version: 1.0.0
-main: com.yourname.fistplugin.FistPlugin
+main: com.fistplugin.FistPlugin
 api-version: "1.21"
 author: YourName
-description: A powerful fist abilities plugin
+description: A powerful fist abilities plugin with 10 unique fists
 
 commands:
   fist:
     description: Main fist plugin command
-    usage: /fist <give|remove|list|info|clearall|reload>
+    usage: /fist <help|menu|info|stats|list>
+    aliases: [fists]
     permission: fist.use
+  fistadmin:
+    description: Admin commands for fist plugin
+    usage: /fistadmin <give|remove|reload|clearall|reset>
+    permission: fist.admin
+    aliases: [fa]
 
 permissions:
   fist.use:
-    description: Use fist commands
+    description: Use basic fist commands
     default: true
   fist.admin:
     description: Admin commands for fist plugin
     default: op
+    children:
+      fist.use: true
