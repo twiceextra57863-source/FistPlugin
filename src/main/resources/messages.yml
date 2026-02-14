@@ -1,0 +1,108 @@
+# FistPlugin Messages
+
+prefix: "&8[&6Fist&8] &r"
+
+commands:
+  help:
+    - "&8&m+----------------------------+"
+    - "&6&lFistPlugin Commands"
+    - "&8&m+----------------------------+"
+    - "&e/fist help &7- Show this help"
+    - "&e/fist menu &7- Open fist selector"
+    - "&e/fist info [player] &7- Show fist info"
+    - "&e/fist stats [player] &7- Show player stats"
+    - "&e/fist list &7- List all fists"
+    - "&8&m+----------------------------+"
+  
+  admin-help:
+    - "&8&m+----------------------------+"
+    - "&c&lFistPlugin Admin Commands"
+    - "&8&m+----------------------------+"
+    - "&c/fistadmin give <player> <fist> &7- Give fist to player"
+    - "&c/fistadmin remove <player> &7- Remove player's fist"
+    - "&c/fistadmin reload &7- Reload plugin"
+    - "&c/fistadmin clearall &7- Clear all fists"
+    - "&c/fistadmin reset <player> &7- Reset player stats"
+    - "&8&m+----------------------------+"
+
+abilities:
+  no-target: "&cNo target found!"
+  cooldown: "&c⏳ %ability% on cooldown! %seconds%s remaining"
+  ready: "&a✔ %ability% ready!"
+  
+  orb:
+    right: "&6⚡ Orb launched!"
+    crouch: "&6🥊 Boxing arena created!"
+    
+  blossom:
+    right: "&d🌸 Freeze projectile launched!"
+    crouch: "&d🌿 Target frozen and poisoned!"
+    
+  beast:
+    right: "&c🐾 Growing damage applied!"
+    crouch: "&c🐁 You shrunk!"
+    
+  water:
+    right: "&b💧 You can now fly!"
+    crouch: "&b🌊 Tsunami summoned!"
+    
+  reality:
+    right: "&5🗻 Terrain raised!"
+    crouch: "&5☄️ Meteor shower summoned!"
+    
+  cosmic:
+    right: "&3🌀 Target spinning!"
+    crouch: "&3🪝 Hook shot! Left click to launch"
+    
+  wolf:
+    right: "&7🐺 Dash and slash!"
+    crouch: "&7🐕‍🦺 Wolf clones summoned!"
+    
+  bomb:
+    right: "&4💣 Ghost bomb chasing!"
+    crouch: "&4🔥 Laser activated!"
+    
+  void:
+    right: "&8🌑 Target pulled!"
+    crouch: "&8💫 Void nova unleashed!"
+    
+  phantom:
+    right: "&f👻 You phased through reality!"
+    crouch: "&f👁️ Target possessed!"
+
+fist:
+  received: "&a✨ You received %fist%!"
+  removed: "&c❌ Your fist has been removed!"
+  selected: "&a✅ You selected %fist%"
+  change-cooldown: "&cYou can change fists again in %minutes%m %seconds%s!"
+  
+  info:
+    - "&8&m+----------------------------+"
+    - "&6%player%'s Fist: %fist%"
+    - "&7%lore%"
+    - "&eRight-click: &7%right% cooldown"
+    - "&eCrouch+Right-click: &7%crouch% cooldown"
+    - "&8&m+----------------------------+"
+    
+  list-header: "&8&m+----------------------------+\n&6&lAvailable Fists\n&8&m+----------------------------+"
+  
+stats:
+  header: "&8&m+----------------------------+\n&6&l%player%'s Stats\n&8&m+----------------------------+"
+  kills: "&eKills: &7%kills%"
+  deaths: "&eDeaths: &7%deaths%"
+  kd: "&eK/D Ratio: &7%kd%"
+  abilities: "&eAbilities Used: &7%abilities%"
+  footer: "&8&m+----------------------------+"
+
+errors:
+  no-permission: "&cYou don't have permission!"
+  player-not-found: "&cPlayer not found!"
+  no-fist: "&cYou don't have a fist!"
+  invalid-fist: "&cInvalid fist! Use /fist list to see available fists."
+  console-only: "&cOnly players can use this command!"
+  invalid-usage: "&cInvalid usage! Use /fist help for commands."
+
+success:
+  plugin-reloaded: "&a✅ Plugin reloaded!"
+  fists-cleared: "&a✅ Cleared %count% fists from all online players!"
+  stats-reset: "&a✅ Reset stats for %player%!"
