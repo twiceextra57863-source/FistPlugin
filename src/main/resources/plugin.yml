@@ -1,0 +1,11 @@
+name: FistPlugin
+version: 1.0.0
+main: me.sdmine.fistplugin.FistPlugin
+api-version: 1.21
+
+commands:
+  fist:
+    usage: /fist
+    description: Main fist command
+    permission: fist.admin
+    
