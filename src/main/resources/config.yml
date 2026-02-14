@@ -1,17 +1,30 @@
-# Fist Plugin Configuration
+# FistPlugin Configuration
+
 settings:
-  # Enable/disable ambient particles
+  # Ambient particles around players
   ambient-particles: true
+  
   # Cooldown display method (actionbar, bossbar, title)
   cooldown-display: actionbar
+  
+  # Allow fist switching
+  allow-fist-switching: true
+  fist-switch-cooldown: 300 # seconds (5 minutes)
+  
   # Resource pack settings
   resource-pack:
-    enabled: true
-    url: "your-resource-pack-url-here"
-    # Symbol to use when no resource pack (∆)
+    enabled: false
+    url: "https://example.com/resourcepack.zip"
+    # Symbol to show when no resource pack (will be replaced by texture)
     fallback-symbol: "∆"
+  
+  # Damage settings
+  damage:
+    enable-friendly-fire: true
+    pvp-damage-multiplier: 1.0
+    pve-damage-multiplier: 1.0
 
-# Ability settings
+# Ability settings (override default cooldowns)
 abilities:
   orb-fist:
     right-click-cooldown: 4
@@ -21,4 +34,51 @@ abilities:
     right-click-cooldown: 5
     crouch-click-cooldown: 60
     freeze-duration: 4
-  # ... other fists configuration
+    poison-damage: 1.0
+  beast-fist:
+    right-click-cooldown: 5
+    crouch-click-cooldown: 30
+    base-damage: 2.0
+    damage-increase: 2.0
+  water-fist:
+    right-click-cooldown: 20
+    crouch-click-cooldown: 60
+    flight-duration: 6
+    tsunami-knockback: 2.0
+  reality-fist:
+    right-click-cooldown: 20
+    crouch-click-cooldown: 60
+    terrain-size: 5
+    terrain-height: 6
+  cosmic-fist:
+    right-click-cooldown: 15
+    crouch-click-cooldown: 45
+    spin-duration: 2
+  wolf-fist:
+    right-click-cooldown: 30
+    crouch-click-cooldown: 120
+    dash-speed: 1.5
+    clone-duration: 10
+    clone-damage: 4.0
+  bomb-fist:
+    right-click-cooldown: 40
+    crouch-click-cooldown: 120
+    ghost-speed: 0.5
+    explosion-power: 3.0
+  void-fist:
+    right-click-cooldown: 25
+    crouch-click-cooldown: 90
+    pull-strength: 2.0
+  phantom-fist:
+    right-click-cooldown: 15
+    crouch-click-cooldown: 60
+    phase-duration: 2
+
+# Message settings
+messages:
+  prefix: "&8[&6Fist&8] &r"
+  no-permission: "&cYou don't have permission!"
+  player-not-found: "&cPlayer not found!"
+  no-fist: "&cYou don't have a fist!"
+  cooldown: "&c⏳ Ability on cooldown! %seconds%s remaining"
+  ability-ready: "&a✔ Ability ready!"
