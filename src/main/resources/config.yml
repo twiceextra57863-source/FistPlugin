@@ -1,15 +1,24 @@
-package me.sdmine.fistplugin.fist;
+# Fist Plugin Configuration
+settings:
+  # Enable/disable ambient particles
+  ambient-particles: true
+  # Cooldown display method (actionbar, bossbar, title)
+  cooldown-display: actionbar
+  # Resource pack settings
+  resource-pack:
+    enabled: true
+    url: "your-resource-pack-url-here"
+    # Symbol to use when no resource pack (∆)
+    fallback-symbol: "∆"
 
-public enum FistType {
-    ORB,
-    BLOSSOM,
-    BEAST,
-    WATER,
-    REALITY,
-    COSMIC,
-    WOLF,
-    BOMB,
-    SHADOW,
-    STORM
-}
-
+# Ability settings
+abilities:
+  orb-fist:
+    right-click-cooldown: 4
+    crouch-click-cooldown: 120
+    damage: 6.0
+  blossom-fist:
+    right-click-cooldown: 5
+    crouch-click-cooldown: 60
+    freeze-duration: 4
+  # ... other fists configuration
