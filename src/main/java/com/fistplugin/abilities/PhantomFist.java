@@ -63,7 +63,7 @@ public class PhantomFist extends BaseAbility {
     @Override
     public boolean onCrouchRightClick(Player player) {
         // Crouch + right click - Possession
-        LivingEntity target = getTargetEntity(player, 30);
+        final LivingEntity target = getTargetEntity(player, 30);
         if (target == null) {
             player.sendMessage("§cNo target found!");
             return false;
