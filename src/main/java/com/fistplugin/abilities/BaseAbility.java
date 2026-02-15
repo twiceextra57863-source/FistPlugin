@@ -7,7 +7,6 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import java.util.List;
 
@@ -25,15 +24,14 @@ public abstract class BaseAbility implements Ability {
         double closestDistance = Double.MAX_VALUE;
         
         for (Entity entity : entities) {
-            if (entity instanceof Player && entity != player) {
+            if (entity instanceof Player && entity != player && player.hasLineOfSight(entity)) {
                 double distance = player.getLocation().distance(entity.getLocation());
-                if (distance < closestDistance && player.hasLineOfSight(entity)) {
+                if (distance < closestDistance) {
                     closestDistance = distance;
                     closest = (Player) entity;
                 }
             }
         }
-        
         return closest;
     }
     
@@ -43,15 +41,14 @@ public abstract class BaseAbility implements Ability {
         double closestDistance = Double.MAX_VALUE;
         
         for (Entity entity : entities) {
-            if (entity instanceof LivingEntity && entity != player) {
+            if (entity instanceof LivingEntity && entity != player && player.hasLineOfSight(entity)) {
                 double distance = player.getLocation().distance(entity.getLocation());
-                if (distance < closestDistance && player.hasLineOfSight(entity)) {
+                if (distance < closestDistance) {
                     closestDistance = distance;
                     closest = (LivingEntity) entity;
                 }
             }
         }
-        
         return closest;
     }
     
@@ -65,17 +62,9 @@ public abstract class BaseAbility implements Ability {
         }
     }
     
-    protected void spawnCircleParticles(Location center, Particle particle, double radius, int points) {
-        for (int i = 0; i < points; i++) {
-            double angle = (2 * Math.PI / points) * i;
-            double x = Math.cos(angle) * radius;
-            double z = Math.sin(angle) * radius;
-            Location point = center.clone().add(x, 0, z);
-            center.getWorld().spawnParticle(particle, point, 1, 0, 0, 0, 0);
+    protected void playSound(Location loc, Sound sound, float volume, float pitch) {
+        if (loc.getWorld() != null) {
+            loc.getWorld().playSound(loc, sound, volume, pitch);
         }
     }
-    
-    protected void playSound(Location loc, Sound sound, float volume, float pitch) {
-        loc.getWorld().playSound(loc, sound, volume, pitch);
-    }
-          }
+}
