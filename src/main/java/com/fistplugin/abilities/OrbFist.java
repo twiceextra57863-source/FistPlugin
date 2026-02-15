@@ -66,19 +66,19 @@ public class OrbFist extends BaseAbility {
     @Override
     public boolean onCrouchRightClick(Player player) {
         // Crouch + right click ability - Boxing arena
-        Player target = getTargetPlayer(player, 50);
+        final Player target = getTargetPlayer(player, 50);
         if (target == null) {
             player.sendMessage("§cNo target found!");
             return false;
         }
         
-        Location center = player.getTargetBlock(null, 50).getLocation().add(0, 2, 0);
+        final Location center = player.getTargetBlock(null, 50).getLocation().add(0, 2, 0);
         if (center.getBlock().getType() == Material.AIR) {
-            center = target.getLocation();
+            center.set(target.getLocation().getX(), target.getLocation().getY(), target.getLocation().getZ());
         }
         
-        Location playerLoc = player.getLocation().clone();
-        Location targetLoc = target.getLocation().clone();
+        final Location playerLoc = player.getLocation().clone();
+        final Location targetLoc = target.getLocation().clone();
         
         // Teleport to arena
         player.teleport(center.clone().add(4, 0, 0));
@@ -185,4 +185,4 @@ public class OrbFist extends BaseAbility {
     public String getDescription() {
         return "§6Master of explosive orbs and boxing arenas";
     }
-            }
+}
