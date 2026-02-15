@@ -4,6 +4,7 @@ import com.fistplugin.FistPlugin;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;  // IMPORT ADD KARO
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -23,7 +24,7 @@ public class CosmicFist extends BaseAbility {
     @Override
     public boolean onRightClick(Player player) {
         // Right click - Spin target
-        LivingEntity target = getTargetEntity(player, 30);
+        final LivingEntity target = getTargetEntity(player, 30);
         if (target == null) {
             player.sendMessage("§cNo target found!");
             return false;
@@ -67,7 +68,7 @@ public class CosmicFist extends BaseAbility {
     @Override
     public boolean onCrouchRightClick(Player player) {
         // Crouch + right click - Hook and drag
-        LivingEntity target = getTargetEntity(player, 40);
+        final LivingEntity target = getTargetEntity(player, 40);
         if (target == null) {
             player.sendMessage("§cNo target found!");
             return false;
@@ -90,7 +91,7 @@ public class CosmicFist extends BaseAbility {
             hookedTargets.remove(player.getUniqueId());
         }, 100L);
         
-        plugin.getFistManager().getPlayerData(player).addAbilityUsed();
+        plugin.getFistManager().getPlayerData(player).addAbilityUsed());
         return true;
     }
     
