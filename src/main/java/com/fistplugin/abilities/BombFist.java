@@ -23,7 +23,6 @@ public class BombFist extends BaseAbility {
             return false;
         }
         
-        // Ghost effect that chases
         Location start = player.getLocation().add(0, 1, 0);
         
         new BukkitRunnable() {
@@ -33,28 +32,25 @@ public class BombFist extends BaseAbility {
             
             @Override
             public void run() {
-                if (ticks >= 60 || target.isDead()) { // 3 seconds max chase
-                    // Spawn chicken bomb
+                if (ticks >= 60 || target.isDead()) {
                     spawnChickenBomb(current, player);
                     cancel();
                     return;
                 }
                 
-                // Move towards target
                 current.add(direction);
                 
-                // Ghost particles
+                // FIXED: SOUL_FIRE_FLAME -> SOUL_FIRE_FLAME (same)
+                // FIXED: SMOKE_NORMAL -> SMOKE
                 player.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, current, 5, 0.2, 0.2, 0.2, 0.01);
-                player.getWorld().spawnParticle(Particle.SMOKE_NORMAL, current, 3, 0.1, 0.1, 0.1, 0.01);
+                player.getWorld().spawnParticle(Particle.SMOKE, current, 3, 0.1, 0.1, 0.1, 0.01);
                 
-                // Check if reached target
                 if (current.distance(target.getLocation().add(0, 1, 0)) < 1.5) {
                     target.damage(8.0, player);
                     spawnChickenBomb(target.getLocation(), player);
                     cancel();
                 }
                 
-                // Update direction in case target moves
                 direction = target.getLocation().toVector().add(new Vector(0, 1, 0))
                     .subtract(current.toVector()).normalize().multiply(0.5);
                 
@@ -76,27 +72,25 @@ public class BombFist extends BaseAbility {
         chicken.setSilent(true);
         chicken.setCustomName("§cBOMB");
         
-        // Countdown effect
         new BukkitRunnable() {
             int countdown = 3;
             
             @Override
             public void run() {
                 if (countdown <= 0 || chicken.isDead()) {
-                    // Explode
                     chicken.getWorld().createExplosion(chicken.getLocation(), 4.0f, false, true);
                     chicken.remove();
                     cancel();
                     return;
                 }
                 
-                // Particle effect
-                chicken.getWorld().spawnParticle(Particle.REDSTONE, chicken.getLocation().add(0, 1, 0), 
+                // FIXED: REDSTONE -> DUST
+                chicken.getWorld().spawnParticle(Particle.DUST, chicken.getLocation().add(0, 1, 0), 
                     10, 0.3, 0.3, 0.3, 0, new Particle.DustOptions(Color.RED, 1));
                 
                 countdown--;
             }
-        }.runTaskTimer(plugin, 20L, 20L); // Every second
+        }.runTaskTimer(plugin, 20L, 20L);
     }
     
     @Override
@@ -109,7 +103,7 @@ public class BombFist extends BaseAbility {
             
             @Override
             public void run() {
-                if (ticks >= 130) { // 13 seconds
+                if (ticks >= 130) {
                     cancel();
                     return;
                 }
@@ -119,25 +113,22 @@ public class BombFist extends BaseAbility {
                 for (int i = 0; i < 50; i++) {
                     current.add(direction);
                     
-                    // Destroy blocks
                     if (!current.getBlock().getType().isAir()) {
                         current.getBlock().breakNaturally();
-                        player.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, current, 5, 0.2, 0.2, 0.2, 0.05);
+                        // FIXED: EXPLOSION_NORMAL -> EXPLOSION
+                        player.getWorld().spawnParticle(Particle.EXPLOSION, current, 5, 0.2, 0.2, 0.2, 0.05);
                     }
                     
-                    // Damage entities
                     for (Entity entity : player.getWorld().getNearbyEntities(current, 1.5, 1.5, 1.5)) {
                         if (entity instanceof LivingEntity && entity != player) {
                             ((LivingEntity) entity).damage(3.0, player);
-                            
-                            // Knockback
                             Vector knockback = direction.clone().multiply(1.5);
                             entity.setVelocity(knockback);
                         }
                     }
                     
-                    // Laser particles
-                    player.getWorld().spawnParticle(Particle.REDSTONE, current, 1, 0, 0, 0, 0, 
+                    // FIXED: REDSTONE -> DUST
+                    player.getWorld().spawnParticle(Particle.DUST, current, 1, 0, 0, 0, 0, 
                         new Particle.DustOptions(Color.RED, 1));
                     
                     if (!current.getBlock().getType().isAir()) {
