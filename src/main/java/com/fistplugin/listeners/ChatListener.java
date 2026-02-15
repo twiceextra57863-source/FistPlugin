@@ -27,12 +27,17 @@ public class ChatListener implements Listener {
             return;
         }
         
-        // Get CosmicFist instance
-        CosmicFist cosmicFist = (CosmicFist) plugin.getAbilityManager().getAbility(FistType.COSMIC);
+        // Get CosmicFist instance - FIXED: Using getAbility method
+        com.fistplugin.abilities.Ability ability = plugin.getAbilityManager().getAbility(FistType.COSMIC);
+        if (!(ability instanceof CosmicFist)) {
+            return;
+        }
+        
+        CosmicFist cosmicFist = (CosmicFist) ability;
         
         // Check if player is in selection mode
         if (cosmicFist.isInSelectionMode(player)) {
-            event.setCancelled(true); // Cancel chat message
+            event.setCancelled(true);
             
             // Process on main thread
             plugin.getServer().getScheduler().runTask(plugin, () -> {
