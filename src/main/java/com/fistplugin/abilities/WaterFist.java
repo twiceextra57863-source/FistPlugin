@@ -19,10 +19,10 @@ public class WaterFist extends BaseAbility {
     
     @Override
     public boolean onRightClick(Player player) {
+        // Right click - Jet flight for 6 seconds
         player.setAllowFlight(true);
         player.setFlying(true);
         
-        // Water jet particles
         new BukkitRunnable() {
             int seconds = 0;
             
@@ -58,12 +58,14 @@ public class WaterFist extends BaseAbility {
         }.runTaskTimer(plugin, 0L, 20L);
         
         player.sendMessage("§b💧 You can now fly for 6 seconds!");
+        
         plugin.getFistManager().getPlayerData(player).addAbilityUsed();
         return true;
     }
     
     @Override
     public boolean onCrouchRightClick(Player player) {
+        // Crouch + right click - Tsunami
         Location start = player.getLocation();
         Vector direction = player.getLocation().getDirection().normalize().multiply(0.5);
         direction.setY(0.2);
@@ -96,7 +98,7 @@ public class WaterFist extends BaseAbility {
                             }
                         }
                         
-                        // Temporary water blocks (visual only)
+                        // Temporary water blocks
                         if (h == 0 && waterLoc.getBlock().getType() == Material.AIR) {
                             player.sendBlockChange(waterLoc, Material.WATER.createBlockData());
                         }
@@ -124,7 +126,7 @@ public class WaterFist extends BaseAbility {
                 }
                 current.add(direction);
             }
-        }, 120L); // 6 seconds later
+        }, 120L);
         
         player.getWorld().playSound(player.getLocation(), Sound.ITEM_BUCKET_EMPTY, 2.0f, 0.5f);
         player.sendMessage("§b🌊 Tsunami summoned!");
@@ -140,6 +142,6 @@ public class WaterFist extends BaseAbility {
     
     @Override
     public String getDescription() {
-        return "Ride the waves and summon tsunamis";
+        return "§bRide the waves and summon tsunamis";
     }
 }
