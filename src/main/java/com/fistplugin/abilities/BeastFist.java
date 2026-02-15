@@ -18,6 +18,7 @@ public class BeastFist extends BaseAbility {
     
     @Override
     public boolean onRightClick(Player player) {
+        // Right click - Growing damage projectile
         Egg egg = player.launchProjectile(Egg.class);
         egg.setVelocity(player.getLocation().getDirection().multiply(2));
         
@@ -48,10 +49,9 @@ public class BeastFist extends BaseAbility {
                                 return;
                             }
                             
-                            double damage = 2.0 + (time * 2.0);
+                            double damage = 2.0 + (time * 2.0); // 2,4,6,8,10 damage
                             target.damage(damage, player);
                             
-                            // FIXED: EXPLOSION_NORMAL -> EXPLOSION
                             target.getWorld().spawnParticle(Particle.EXPLOSION, 
                                 target.getLocation().add(0, 1, 0), 20, 0.5, 1.0, 0.5, 0.1);
                             
@@ -65,12 +65,15 @@ public class BeastFist extends BaseAbility {
             }
         }, plugin);
         
+        player.sendMessage("§c🐾 Growing damage applied!");
+        
         plugin.getFistManager().getPlayerData(player).addAbilityUsed();
         return true;
     }
     
     @Override
     public boolean onCrouchRightClick(Player player) {
+        // Crouch + right click - Shrink for 10 seconds
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.5f);
         
         player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 200, 0));
@@ -86,12 +89,13 @@ public class BeastFist extends BaseAbility {
                     return;
                 }
                 
-                // FIXED: SPELL_MOB -> ENTITY_EFFECT
                 player.getWorld().spawnParticle(Particle.ENTITY_EFFECT, 
                     player.getLocation().add(0, 0.5, 0), 5, 0.2, 0.2, 0.2, 0);
                 ticks += 5;
             }
         }.runTaskTimer(plugin, 0L, 5L);
+        
+        player.sendMessage("§c🐁 You shrunk for 10 seconds!");
         
         plugin.getFistManager().getPlayerData(player).addAbilityUsed();
         return true;
@@ -104,6 +108,6 @@ public class BeastFist extends BaseAbility {
     
     @Override
     public String getDescription() {
-        return "Size matters - grow and shrink at will";
+        return "§cSize matters - grow and shrink at will";
     }
 }
