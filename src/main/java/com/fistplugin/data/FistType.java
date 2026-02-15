@@ -51,7 +51,7 @@ public enum FistType {
         "Reality Fist",
         ChatColor.DARK_PURPLE,
         "§5Manipulate the terrain itself",
-        Particle.BLOCK_CRACK,
+        Particle.BLOCK,
         Color.PURPLE,
         Sound.BLOCK_STONE_BREAK,
         20, 60
@@ -81,7 +81,7 @@ public enum FistType {
         "Bomb Fist",
         ChatColor.DARK_RED,
         "§4Explosive chaos and destruction",
-        Particle.SMOKE_NORMAL,
+        Particle.SMOKE,
         Color.MAROON,
         Sound.ENTITY_CREEPER_PRIMED,
         40, 120
@@ -101,7 +101,7 @@ public enum FistType {
         "Phantom Fist",
         ChatColor.WHITE,
         "§fPhase through reality",
-        Particle.SPELL_INSTANT,
+        Particle.INSTANT_EFFECT,
         Color.WHITE,
         Sound.ENTITY_PHANTOM_AMBIENT,
         15, 60
