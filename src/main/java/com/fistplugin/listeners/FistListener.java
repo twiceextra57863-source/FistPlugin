@@ -20,12 +20,12 @@ public class FistListener implements Listener {
     
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        // Only handle right clicks, ignore left clicks
+        // Only handle right clicks
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
         
-        // Only handle main hand (off hand ko ignore karo)
+        // Only handle main hand
         if (event.getHand() != EquipmentSlot.HAND) {
             return;
         }
@@ -35,16 +35,15 @@ public class FistListener implements Listener {
         
         if (fist == null) return;
         
-        // Check if player is sneaking (crouch)
-        boolean isCrouching = player.isSneaking();
-        
-        // Cancel event to prevent interaction with blocks/items
+        // Cancel event
         event.setCancelled(true);
+        
+        boolean isCrouching = player.isSneaking();
         
         if (isCrouching) {
             // Crouch right click ability
             String cooldownKey = fist.name() + "_CROUCH";
-            int cooldown = plugin.getAbilityManager().getCrouchClickCooldown(fist);
+            int cooldown = plugin.getAbilityManager().getCrouchClickCooldown(fist); // FIXED
             
             if (plugin.getCooldownManager().isOnCooldown(player, cooldownKey)) {
                 int remaining = plugin.getCooldownManager().getRemainingCooldown(player, cooldownKey);
@@ -62,7 +61,7 @@ public class FistListener implements Listener {
         } else {
             // Normal right click ability
             String cooldownKey = fist.name() + "_RIGHT";
-            int cooldown = plugin.getAbilityManager().getRightClickCooldown(fist);
+            int cooldown = plugin.getAbilityManager().getRightClickCooldown(fist); // FIXED
             
             if (plugin.getCooldownManager().isOnCooldown(player, cooldownKey)) {
                 int remaining = plugin.getCooldownManager().getRemainingCooldown(player, cooldownKey);
@@ -83,11 +82,7 @@ public class FistListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        
-        // Save player data
         plugin.getDataManager().savePlayerData(plugin.getFistManager().getPlayerData(player));
-        
-        // Unload from memory
         plugin.getFistManager().unloadPlayerData(player.getUniqueId());
         plugin.getCooldownManager().clearCooldowns(player);
     }
