@@ -22,14 +22,14 @@ public class RealityFist extends BaseAbility {
     @Override
     public boolean onRightClick(Player player) {
         // Right click - Raise 5x5 area by 6 blocks
-        Block targetBlock = player.getTargetBlock(null, 50);
+        final Block targetBlock = player.getTargetBlock(null, 50);
         if (targetBlock == null || targetBlock.getType() == Material.AIR) {
             player.sendMessage("§cNo valid target block!");
             return false;
         }
         
-        Location center = targetBlock.getLocation();
-        Material blockType = targetBlock.getType();
+        final Location center = targetBlock.getLocation();
+        final Material blockType = targetBlock.getType();
         
         // Raise terrain
         for (int x = -2; x <= 2; x++) {
@@ -82,13 +82,13 @@ public class RealityFist extends BaseAbility {
     @Override
     public boolean onCrouchRightClick(Player player) {
         // Crouch + right click - Meteor shower
-        Player target = getTargetPlayer(player, 50);
+        final Player target = getTargetPlayer(player, 50);
         if (target == null) {
             player.sendMessage("§cNo target found!");
             return false;
         }
         
-        Location targetLoc = target.getLocation();
+        final Location targetLoc = target.getLocation();
         
         new BukkitRunnable() {
             int meteors = 0;
@@ -111,7 +111,7 @@ public class RealityFist extends BaseAbility {
                 };
                 Material meteorType = meteorMaterials[(int)(Math.random() * meteorMaterials.length)];
                 
-                FallingBlock fallingBlock = player.getWorld().spawnFallingBlock(
+                final FallingBlock fallingBlock = player.getWorld().spawnFallingBlock(
                     meteorLoc, meteorType.createBlockData());
                 fallingBlock.setVelocity(new Vector(0, -1.2, 0));
                 fallingBlock.setDropItem(false);
