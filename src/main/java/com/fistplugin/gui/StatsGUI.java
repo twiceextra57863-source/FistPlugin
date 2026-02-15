@@ -5,6 +5,9 @@ import com.fistplugin.data.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -13,7 +16,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.util.Arrays;
 import java.util.UUID;
 
-public class StatsGUI {
+public class StatsGUI implements Listener {
     
     private final FistPlugin plugin;
     
@@ -24,7 +27,6 @@ public class StatsGUI {
     public void openStatsGUI(Player player, UUID targetUUID) {
         Inventory inv = Bukkit.createInventory(null, 54, "§8⚡ Player Stats ⚡");
         
-        // Fill background
         ItemStack bg = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta bgMeta = bg.getItemMeta();
         bgMeta.setDisplayName(" ");
@@ -35,10 +37,9 @@ public class StatsGUI {
         }
         
         Player target = Bukkit.getPlayer(targetUUID);
-        PlayerData data = plugin.getFistManager().getPlayerData(target != null ? target : targetUUID);
+        PlayerData data = plugin.getFistManager().getPlayerData(target != null ? target : player);
         
         if (target != null) {
-            // Player head
             ItemStack head = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta headMeta = (SkullMeta) head.getItemMeta();
             headMeta.setOwningPlayer(target);
@@ -47,7 +48,7 @@ public class StatsGUI {
             inv.setItem(13, head);
         }
         
-        // Stats display
+        // Stats
         inv.setItem(20, createStatItem(Material.DIAMOND_SWORD, "§eKills", 
             Arrays.asList("§7Total: §f" + data.getKills())));
         
@@ -63,17 +64,6 @@ public class StatsGUI {
         inv.setItem(29, createStatItem(Material.BLAZE_POWDER, "§eAbilities Used", 
             Arrays.asList("§7Total: §f" + data.getAbilitiesUsed())));
         
-        long hours = data.getPlayTime() / 3600000;
-        long minutes = (data.getPlayTime() % 3600000) / 60000;
-        
-        inv.setItem(33, createStatItem(Material.CLOCK, "§ePlay Time", 
-            Arrays.asList("§7Hours: §f" + hours, "§7Minutes: §f" + minutes)));
-        
-        if (data.getFistType() != null) {
-            inv.setItem(31, createStatItem(Material.END_CRYSTAL, "§eCurrent Fist", 
-                Arrays.asList(data.getFistType().getDisplayName(), "§7" + data.getFistType().getLore())));
-        }
-        
         player.openInventory(inv);
     }
     
@@ -84,5 +74,12 @@ public class StatsGUI {
         meta.setLore(lore);
         item.setItemMeta(meta);
         return item;
+    }
+    
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (event.getView().getTitle().equals("§8⚡ Player Stats ⚡")) {
+            event.setCancelled(true);
+        }
     }
 }
