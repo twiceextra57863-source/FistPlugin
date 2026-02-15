@@ -14,10 +14,14 @@ public class FistCommand implements CommandExecutor {
     
     private final FistPlugin plugin;
     private final StatsGUI statsGUI;
+    private final FistSelectorGUI selectorGUI;
+    private final SpinMenuGUI spinGUI;
     
     public FistCommand(FistPlugin plugin) {
         this.plugin = plugin;
         this.statsGUI = new StatsGUI(plugin);
+        this.selectorGUI = new FistSelectorGUI(plugin);
+        this.spinGUI = new SpinMenuGUI(plugin);
     }
     
     @Override
@@ -40,12 +44,13 @@ public class FistCommand implements CommandExecutor {
                 sendHelp(player);
                 break;
                 
+            case "gui":
             case "menu":
-                FistSelectorGUI.openGUI(player);
+                FistSelectorGUI.openGUI(player); // STATIC CALL - FIXED
                 break;
                 
             case "spin":
-                SpinMenuGUI.openSpinMenu(player);
+                SpinMenuGUI.openSpinMenu(player); // STATIC CALL - FIXED
                 break;
                 
             case "info":
