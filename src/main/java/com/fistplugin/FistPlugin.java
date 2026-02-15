@@ -67,6 +67,7 @@ public class FistPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ResourcePackListener(this), this);
         getServer().getPluginManager().registerEvents(new SpinMenuGUI(this), this);
         getServer().getPluginManager().registerEvents(new FistSelectorGUI(this), this);
+        getServer().getPluginManager().registerEvents(new ChatListener(this), this); // ADD THIS
     }
     
     private void registerCommands() {
