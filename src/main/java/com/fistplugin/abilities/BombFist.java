@@ -18,13 +18,13 @@ public class BombFist extends BaseAbility {
     @Override
     public boolean onRightClick(Player player) {
         // Right click - Ghost bomb
-        LivingEntity target = getTargetEntity(player, 30);
+        final LivingEntity target = getTargetEntity(player, 30);
         if (target == null) {
             player.sendMessage("§cNo target found!");
             return false;
         }
         
-        Location start = player.getLocation().add(0, 1, 0);
+        final Location start = player.getLocation().add(0, 1, 0);
         
         new BukkitRunnable() {
             int ticks = 0;
@@ -65,7 +65,7 @@ public class BombFist extends BaseAbility {
     }
     
     private void spawnChickenBomb(Location loc, Player owner) {
-        Chicken chicken = loc.getWorld().spawn(loc, Chicken.class);
+        final Chicken chicken = loc.getWorld().spawn(loc, Chicken.class);
         chicken.setInvulnerable(true);
         chicken.setAI(false);
         chicken.setSilent(true);
@@ -94,8 +94,8 @@ public class BombFist extends BaseAbility {
     @Override
     public boolean onCrouchRightClick(Player player) {
         // Crouch + right click - Laser for 13 seconds
-        Location start = player.getEyeLocation();
-        Vector direction = player.getLocation().getDirection().normalize();
+        final Location start = player.getEyeLocation();
+        final Vector direction = player.getLocation().getDirection().normalize();
         
         new BukkitRunnable() {
             int ticks = 0;
