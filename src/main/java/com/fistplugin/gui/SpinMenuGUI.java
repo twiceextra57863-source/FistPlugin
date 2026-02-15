@@ -4,106 +4,198 @@ import com.fistplugin.FistPlugin;
 import com.fistplugin.data.FistType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Arrays;
+import java.util.Random;
 
 public class SpinMenuGUI implements Listener {
     
     private static FistPlugin plugin;
+    private final Random random = new Random();
     
     public SpinMenuGUI(FistPlugin plugin) {
         SpinMenuGUI.plugin = plugin;
     }
     
     public static void openSpinMenu(Player player) {
-        Inventory inv = Bukkit.createInventory(null, 54, "§8⚡ Fist Spinner ⚡");
+        Inventory inv = Bukkit.createInventory(null, 54, "§8⚡ §6§lCASINO SPIN §8⚡");
         
-        // Fill with glass panes
-        ItemStack glass = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
-        ItemMeta glassMeta = glass.getItemMeta();
-        glassMeta.setDisplayName(" ");
-        glass.setItemMeta(glassMeta);
+        // Decorative border
+        ItemStack goldBorder = new ItemStack(Material.GOLD_BLOCK);
+        ItemMeta goldMeta = goldBorder.getItemMeta();
+        goldMeta.setDisplayName("§6✧");
+        goldBorder.setItemMeta(goldMeta);
         
+        ItemStack diamondBorder = new ItemStack(Material.DIAMOND_BLOCK);
+        ItemMeta diamondMeta = diamondBorder.getItemMeta();
+        diamondMeta.setDisplayName("§b✧");
+        diamondBorder.setItemMeta(diamondMeta);
+        
+        // Fill with fancy pattern
         for (int i = 0; i < 54; i++) {
-            inv.setItem(i, glass);
+            if (i < 9 || i >= 45 || i % 9 == 0 || i % 9 == 8) {
+                if (i % 2 == 0) {
+                    inv.setItem(i, goldBorder.clone());
+                } else {
+                    inv.setItem(i, diamondBorder.clone());
+                }
+            } else {
+                ItemStack glass = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+                ItemMeta glassMeta = glass.getItemMeta();
+                glassMeta.setDisplayName(" ");
+                glass.setItemMeta(glassMeta);
+                inv.setItem(i, glass);
+            }
         }
         
-        // Center item (spinning)
+        // Center display
         ItemStack center = new ItemStack(Material.END_CRYSTAL);
         ItemMeta centerMeta = center.getItemMeta();
-        centerMeta.setDisplayName("§6§lSPINNING...");
-        centerMeta.setLore(Arrays.asList("§7Getting your random fist!"));
+        centerMeta.setDisplayName("§6§l✨ SPIN TO WIN ✨");
+        centerMeta.setLore(Arrays.asList(
+            "§7Click to start the",
+            "§7magical spin wheel!"
+        ));
         center.setItemMeta(centerMeta);
         inv.setItem(22, center);
         
         player.openInventory(inv);
+        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
+    }
+    
+    public static void startSpinAnimation(Player player) {
+        Inventory inv = Bukkit.createInventory(null, 54, "§8⚡ §6§lSPINNING... §8⚡");
         
-        // Spin animation
+        // All fists icons for spinning
+        FistType[] fists = FistType.values();
+        
+        // Create fancy spinning display
+        for (int i = 0; i < 54; i++) {
+            if (i >= 18 && i <= 35 && i % 9 != 0 && i % 9 != 8) {
+                // Random fist for spinning slots
+                FistType randomFist = fists[new Random().nextInt(fists.length)];
+                inv.setItem(i, createFistIcon(randomFist, true));
+            } else {
+                ItemStack glass = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+                ItemMeta glassMeta = glass.getItemMeta();
+                glassMeta.setDisplayName(" ");
+                glass.setItemMeta(glassMeta);
+                inv.setItem(i, glass);
+            }
+        }
+        
+        player.openInventory(inv);
+        
+        // Spin animation - 3 seconds
         new BukkitRunnable() {
             int ticks = 0;
-            int currentSlot = 19;
+            int spinSpeed = 2;
             
             @Override
             public void run() {
                 if (ticks >= 60) { // 3 seconds
-                    // Give random fist
-                    FistType[] fists = FistType.values();
-                    FistType randomFist = fists[(int)(Math.random() * fists.length)];
-                    
-                    plugin.getFistManager().setPlayerFist(player, randomFist);
-                    
-                    // Show result
-                    ItemStack result = createFistIcon(randomFist);
-                    inv.setItem(22, result);
-                    
-                    player.sendMessage("§a§l✦ You received: " + randomFist.getDisplayName());
-                    player.sendMessage("§7" + randomFist.getLore());
-                    
-                    // Close after 2 seconds
-                    new BukkitRunnable() {
-                        @Override
-                        public void run() {
-                            player.closeInventory();
-                        }
-                    }.runTaskLater(plugin, 40L);
-                    
+                    // Stop spinning and show result
+                    showSpinResult(player);
                     cancel();
                     return;
                 }
                 
-                // Clear previous
-                if (ticks % 4 == 0) {
-                    int prevSlot = currentSlot - 1;
-                    if (prevSlot >= 19) {
-                        inv.setItem(prevSlot, glass);
+                // Update spinning slots
+                for (int i = 19; i <= 34; i++) {
+                    if (i % 9 != 0 && i % 9 != 8) {
+                        FistType randomFist = fists[random.nextInt(fists.length)];
+                        inv.setItem(i, createFistIcon(randomFist, true));
                     }
                 }
                 
-                // Update spinning item
-                FistType currentFist = FistType.values()[(ticks / 4) % FistType.values().length];
-                ItemStack spinningItem = createFistIcon(currentFist);
-                inv.setItem(currentSlot, spinningItem);
-                
-                // Move to next slot
-                currentSlot++;
-                if (currentSlot > 34) {
-                    currentSlot = 19;
+                // Spin sound
+                if (ticks % 4 == 0) {
+                    player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HAT, 0.5f, 1.0f + (ticks / 60.0f));
                 }
                 
-                ticks++;
+                ticks += spinSpeed;
             }
         }.runTaskTimer(plugin, 0L, 2L);
     }
     
-    private static ItemStack createFistIcon(FistType fist) {
+    private static void showSpinResult(Player player) {
+        Inventory inv = Bukkit.createInventory(null, 54, "§8⚡ §6§lYOUR PRIZE §8⚡");
+        
+        // Decorative border
+        ItemStack goldBorder = new ItemStack(Material.GOLD_BLOCK);
+        ItemMeta goldMeta = goldBorder.getItemMeta();
+        goldMeta.setDisplayName("§6✧");
+        goldBorder.setItemMeta(goldMeta);
+        
+        for (int i = 0; i < 54; i++) {
+            if (i < 9 || i >= 45 || i % 9 == 0 || i % 9 == 8) {
+                inv.setItem(i, goldBorder.clone());
+            } else {
+                ItemStack glass = new ItemStack(Material.PURPLE_STAINED_GLASS_PANE);
+                ItemMeta glassMeta = glass.getItemMeta();
+                glassMeta.setDisplayName(" ");
+                glass.setItemMeta(glassMeta);
+                inv.setItem(i, glass);
+            }
+        }
+        
+        // Get random fist
+        FistType[] fists = FistType.values();
+        FistType result = fists[random.nextInt(fists.length)];
+        
+        // Set result in center
+        inv.setItem(22, createFistIcon(result, false));
+        
+        // Add celebration items
+        ItemStack firework = new ItemStack(Material.FIREWORK_ROCKET);
+        ItemMeta fireMeta = firework.getItemMeta();
+        fireMeta.setDisplayName("§a§lCONGRATULATIONS!");
+        fireMeta.setLore(Arrays.asList(
+            "§7You received:",
+            result.getDisplayName(),
+            "§7" + result.getLore()
+        ));
+        firework.setItemMeta(fireMeta);
+        inv.setItem(31, firework);
+        
+        player.openInventory(inv);
+        
+        // Give fist to player
+        plugin.getFistManager().setPlayerFist(player, result);
+        
+        // Epic effects
+        player.getWorld().playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
+        player.getWorld().spawnParticle(Particle.FIREWORK, player.getLocation(), 50, 1, 1, 1, 0.1);
+        
+        player.sendMessage(" ");
+        player.sendMessage("§8§m✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧");
+        player.sendMessage("§6§l    ✨ CONGRATULATIONS! ✨");
+        player.sendMessage("§8§m✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧");
+        player.sendMessage("§a    You received: " + result.getDisplayName());
+        player.sendMessage("§7    " + result.getLore());
+        player.sendMessage("§8§m✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧✦✧");
+        player.sendMessage(" ");
+        
+        // Close after 5 seconds
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                player.closeInventory();
+            }
+        }.runTaskLater(plugin, 100L);
+    }
+    
+    private static ItemStack createFistIcon(FistType fist, boolean small) {
         Material material = Material.PAPER;
         switch (fist) {
             case ORB: material = Material.FIRE_CHARGE; break;
@@ -120,21 +212,45 @@ public class SpinMenuGUI implements Listener {
         
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(fist.getDisplayName());
-        meta.setLore(Arrays.asList(
-            "§7" + fist.getLore(),
-            "",
-            "§eRight-click: §fSummon projectile",
-            "§eCrouch+Right-click: §fSpecial ability"
-        ));
-        item.setItemMeta(meta);
         
+        if (small) {
+            meta.setDisplayName("§f" + fist.getDisplayName());
+        } else {
+            meta.setDisplayName(fist.getDisplayName());
+            meta.setLore(Arrays.asList(
+                "§7" + fist.getLore(),
+                "",
+                "§eRight-click: §fSummon projectile",
+                "§eCrouch+Right-click: §fSpecial ability"
+            ));
+        }
+        
+        item.setItemMeta(meta);
         return item;
     }
     
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (event.getView().getTitle().equals("§8⚡ Fist Spinner ⚡")) {
+        String title = event.getView().getTitle();
+        
+        if (title.contains("CASINO SPIN") || title.contains("SPINNING") || title.contains("YOUR PRIZE")) {
+            event.setCancelled(true);
+            
+            if (event.getWhoClicked() instanceof Player) {
+                Player player = (Player) event.getWhoClicked();
+                
+                // Start spin on center click
+                if (title.contains("CASINO SPIN") && event.getRawSlot() == 22) {
+                    startSpinAnimation(player);
+                }
+            }
+        }
+    }
+    
+    @EventHandler
+    public void onInventoryDrag(InventoryDragEvent event) {
+        String title = event.getView().getTitle();
+        if (title.contains("CASINO SPIN") || title.contains("SPINNING") || title.contains("YOUR PRIZE")) {
             event.setCancelled(true);
         }
     }
