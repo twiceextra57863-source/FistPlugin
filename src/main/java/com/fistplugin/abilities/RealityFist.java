@@ -7,7 +7,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.FallingBlock;  // ADD THIS IMPORT
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -21,6 +21,7 @@ public class RealityFist extends BaseAbility {
     
     @Override
     public boolean onRightClick(Player player) {
+        // Right click - Raise 5x5 area by 6 blocks
         Block targetBlock = player.getTargetBlock(null, 50);
         if (targetBlock == null || targetBlock.getType() == Material.AIR) {
             player.sendMessage("§cNo valid target block!");
@@ -30,6 +31,7 @@ public class RealityFist extends BaseAbility {
         Location center = targetBlock.getLocation();
         Material blockType = targetBlock.getType();
         
+        // Raise terrain
         for (int x = -2; x <= 2; x++) {
             for (int z = -2; z <= 2; z++) {
                 for (int y = 1; y <= 6; y++) {
@@ -43,12 +45,14 @@ public class RealityFist extends BaseAbility {
             }
         }
         
+        // Remove original blocks
         for (int x = -2; x <= 2; x++) {
             for (int z = -2; z <= 2; z++) {
                 center.clone().add(x, 0, z).getBlock().setType(Material.AIR);
             }
         }
         
+        // Damage entities
         for (Entity entity : player.getWorld().getNearbyEntities(center, 5, 5, 5)) {
             if (entity instanceof LivingEntity && entity != player) {
                 ((LivingEntity) entity).damage(10.0, player);
@@ -58,6 +62,7 @@ public class RealityFist extends BaseAbility {
         player.getWorld().playSound(center, Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 0.5f);
         player.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, center.clone().add(0, 3, 0), 1);
         
+        // Falling blocks particles
         for (int i = 0; i < 20; i++) {
             Location particleLoc = center.clone().add(
                 (Math.random() - 0.5) * 8,
@@ -68,12 +73,15 @@ public class RealityFist extends BaseAbility {
                 blockType.createBlockData());
         }
         
+        player.sendMessage("§5🗻 Terrain raised!");
+        
         plugin.getFistManager().getPlayerData(player).addAbilityUsed();
         return true;
     }
     
     @Override
     public boolean onCrouchRightClick(Player player) {
+        // Crouch + right click - Meteor shower
         Player target = getTargetPlayer(player, 50);
         if (target == null) {
             player.sendMessage("§cNo target found!");
@@ -153,6 +161,6 @@ public class RealityFist extends BaseAbility {
     
     @Override
     public String getDescription() {
-        return "Manipulate the terrain itself";
+        return "§5Manipulate the terrain itself";
     }
 }
