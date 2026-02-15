@@ -19,6 +19,7 @@ public class PhantomFist extends BaseAbility {
     
     @Override
     public boolean onRightClick(Player player) {
+        // Right click - Phase through reality
         player.setInvulnerable(true);
         player.setInvisible(true);
         
@@ -27,7 +28,7 @@ public class PhantomFist extends BaseAbility {
             
             @Override
             public void run() {
-                if (ticks >= 40) {
+                if (ticks >= 40) { // 2 seconds
                     player.setInvulnerable(false);
                     player.setInvisible(false);
                     cancel();
@@ -41,12 +42,10 @@ public class PhantomFist extends BaseAbility {
                     double offsetY = Math.random() * 2;
                     double offsetZ = (Math.random() - 0.5) * 1.5;
                     
-                    // Fixed: SPELL_INSTANT -> INSTANT_EFFECT
                     player.getWorld().spawnParticle(Particle.INSTANT_EFFECT, 
                         loc.clone().add(offsetX, offsetY, offsetZ), 1, 0, 0, 0, 0);
                 }
                 
-                // Fixed: REDSTONE -> DUST
                 player.getWorld().spawnParticle(Particle.DUST, loc, 5, 0.3, 0.3, 0.3, 0,
                     new Particle.DustOptions(Color.WHITE, 1));
                 
@@ -63,13 +62,13 @@ public class PhantomFist extends BaseAbility {
     
     @Override
     public boolean onCrouchRightClick(Player player) {
+        // Crouch + right click - Possession
         LivingEntity target = getTargetEntity(player, 30);
         if (target == null) {
             player.sendMessage("§cNo target found!");
             return false;
         }
         
-        // Fixed: CONFUSION -> NAUSEA (1.21 name)
         target.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, 140, 1));
         target.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 60, 0));
         target.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 100, 1));
@@ -91,7 +90,6 @@ public class PhantomFist extends BaseAbility {
                     double x = Math.sin(rad) * 1.2;
                     double z = Math.cos(rad) * 1.2;
                     
-                    // Fixed: SPELL_MOB -> ENTITY_EFFECT
                     Location particleLoc = loc.clone().add(x, 0, z);
                     target.getWorld().spawnParticle(Particle.ENTITY_EFFECT, particleLoc, 1, 0, 0, 0, 0,
                         new Particle.DustOptions(Color.GRAY, 1));
@@ -119,6 +117,6 @@ public class PhantomFist extends BaseAbility {
     
     @Override
     public String getDescription() {
-        return "Phase through reality and possess enemies";
+        return "§fPhase through reality and possess enemies";
     }
 }
