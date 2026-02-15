@@ -1,9 +1,10 @@
 package com.fistplugin.managers;
 
 import com.fistplugin.FistPlugin;
-import com.fistplugin.data.FistType;
 import com.fistplugin.abilities.*;
+import com.fistplugin.data.FistType;
 import org.bukkit.entity.Player;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,8 +16,6 @@ public class AbilityManager {
     public AbilityManager(FistPlugin plugin) {
         this.plugin = plugin;
         this.abilities = new HashMap<>();
-        
-        // Register all abilities
         registerAbilities();
     }
     
@@ -47,12 +46,5 @@ public class AbilityManager {
             return ability.onCrouchRightClick(player);
         }
         return false;
-    }
-    
-    public interface Ability {
-        boolean onRightClick(Player player);
-        boolean onCrouchRightClick(Player player);
-        String getName();
-        String getDescription();
     }
 }
