@@ -168,12 +168,12 @@ public class ParticleManager {
                 loc.clone().add(x, y, z), 1, 0, 0, 0, 0);
         }
         
-        // Water droplets
+        // Water droplets - FIXED: DRIP_WATER -> DRIPPING_WATER
         for (int i = 0; i < 5; i++) {
             double offsetX = (Math.random() - 0.5) * 2;
             double offsetZ = (Math.random() - 0.5) * 2;
             
-            loc.getWorld().spawnParticle(Particle.DRIP_WATER, 
+            loc.getWorld().spawnParticle(Particle.DRIPPING_WATER, 
                 loc.clone().add(offsetX, 2, offsetZ), 1, 0, 0, 0, 0);
         }
         
@@ -415,7 +415,6 @@ public class ParticleManager {
         }
     }
     
-    // For ability activation (temporary particles)
     public void spawnFistParticles(Player player, FistType fist) {
         Location loc = player.getLocation().add(0, 1, 0);
         
@@ -424,7 +423,7 @@ public class ParticleManager {
             
             @Override
             public void run() {
-                if (ticks >= 30 || !player.isOnline()) { // 1.5 seconds
+                if (ticks >= 30 || !player.isOnline()) {
                     cancel();
                     return;
                 }
@@ -450,7 +449,6 @@ public class ParticleManager {
                         }
                         break;
                         
-                    // Add other cases...
                     default:
                         break;
                 }
@@ -459,4 +457,4 @@ public class ParticleManager {
             }
         }.runTaskTimer(plugin, 0L, 1L);
     }
-                }
+                                       }
