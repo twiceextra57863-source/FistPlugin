@@ -66,8 +66,8 @@ public class WaterFist extends BaseAbility {
     @Override
     public boolean onCrouchRightClick(Player player) {
         // Crouch + right click - Tsunami
-        Location start = player.getLocation();
-        Vector direction = player.getLocation().getDirection().normalize().multiply(0.5);
+        final Location start = player.getLocation();
+        final Vector direction = player.getLocation().getDirection().normalize().multiply(0.5);
         direction.setY(0.2);
         
         new BukkitRunnable() {
