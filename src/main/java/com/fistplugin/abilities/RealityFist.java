@@ -10,6 +10,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 public class RealityFist extends BaseAbility {
     
@@ -28,7 +29,6 @@ public class RealityFist extends BaseAbility {
         Location center = targetBlock.getLocation();
         Material blockType = targetBlock.getType();
         
-        // Raise a 5x5 area by 6 blocks
         for (int x = -2; x <= 2; x++) {
             for (int z = -2; z <= 2; z++) {
                 for (int y = 1; y <= 6; y++) {
@@ -42,32 +42,30 @@ public class RealityFist extends BaseAbility {
             }
         }
         
-        // Remove original blocks
         for (int x = -2; x <= 2; x++) {
             for (int z = -2; z <= 2; z++) {
                 center.clone().add(x, 0, z).getBlock().setType(Material.AIR);
             }
         }
         
-        // Damage entities in area
         for (Entity entity : player.getWorld().getNearbyEntities(center, 5, 5, 5)) {
             if (entity instanceof LivingEntity && entity != player) {
                 ((LivingEntity) entity).damage(10.0, player);
             }
         }
         
-        // Effects
         player.getWorld().playSound(center, Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 0.5f);
-        player.getWorld().spawnParticle(Particle.EXPLOSION_HUGE, center.clone().add(0, 3, 0), 1);
+        // FIXED: EXPLOSION_HUGE -> EXPLOSION_EMITTER
+        player.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, center.clone().add(0, 3, 0), 1);
         
-        // Falling blocks particles
+        // FIXED: BLOCK_CRACK -> BLOCK
         for (int i = 0; i < 20; i++) {
             Location particleLoc = center.clone().add(
                 (Math.random() - 0.5) * 8,
                 Math.random() * 8,
                 (Math.random() - 0.5) * 8
             );
-            player.getWorld().spawnParticle(Particle.BLOCK_CRACK, particleLoc, 5, 0.2, 0.2, 0.2, 0, 
+            player.getWorld().spawnParticle(Particle.BLOCK, particleLoc, 5, 0.2, 0.2, 0.2, 0, 
                 blockType.createBlockData());
         }
         
@@ -95,28 +93,23 @@ public class RealityFist extends BaseAbility {
                     return;
                 }
                 
-                // Random offset for each meteor
                 double offsetX = (Math.random() - 0.5) * 6;
                 double offsetZ = (Math.random() - 0.5) * 6;
                 
                 Location meteorLoc = targetLoc.clone().add(offsetX, 20, offsetZ);
                 
-                // Choose random heavy block
                 Material[] meteorMaterials = {
                     Material.NETHERRACK, Material.STONE, Material.OBSIDIAN,
                     Material.ANCIENT_DEBRIS, Material.NETHERITE_BLOCK
                 };
                 Material meteorType = meteorMaterials[(int)(Math.random() * meteorMaterials.length)];
                 
-                // Create falling block
-                org.bukkit.entity.FallingBlock fallingBlock = player.getWorld().spawnFallingBlock(
+                FallingBlock fallingBlock = player.getWorld().spawnFallingBlock(
                     meteorLoc, meteorType.createBlockData());
                 fallingBlock.setVelocity(new Vector(0, -1.2, 0));
                 fallingBlock.setDropItem(false);
                 fallingBlock.setHurtEntities(true);
-                fallingBlock.setCustomName("Meteor");
                 
-                // Trail
                 new BukkitRunnable() {
                     @Override
                     public void run() {
@@ -127,12 +120,12 @@ public class RealityFist extends BaseAbility {
                         
                         fallingBlock.getWorld().spawnParticle(Particle.FLAME, 
                             fallingBlock.getLocation(), 5, 0.5, 0.5, 0.5, 0.02);
-                        fallingBlock.getWorld().spawnParticle(Particle.SMOKE_NORMAL, 
+                        // FIXED: SMOKE_NORMAL -> SMOKE
+                        fallingBlock.getWorld().spawnParticle(Particle.SMOKE, 
                             fallingBlock.getLocation(), 3, 0.3, 0.3, 0.3, 0.01);
                     }
                 }.runTaskTimer(plugin, 0L, 1L);
                 
-                // Explode on impact
                 new BukkitRunnable() {
                     @Override
                     public void run() {
