@@ -4,7 +4,7 @@ import com.fistplugin.FistPlugin;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.Entity;  // IMPORT ADD KARO
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -91,7 +91,7 @@ public class CosmicFist extends BaseAbility {
             hookedTargets.remove(player.getUniqueId());
         }, 100L);
         
-        plugin.getFistManager().getPlayerData(player).addAbilityUsed());
+        plugin.getFistManager().getPlayerData(player).addAbilityUsed();
         return true;
     }
     
