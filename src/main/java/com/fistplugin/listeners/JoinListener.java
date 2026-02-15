@@ -40,7 +40,7 @@ public class JoinListener implements Listener {
         // Start ambient particles
         startAmbientParticles(player);
         
-        // Start heart indicator display
+        // Start heart indicator display - FIXED: Using sendMessage instead
         startHeartIndicator(player);
         
         // Send welcome message
@@ -74,19 +74,18 @@ public class JoinListener implements Listener {
                 FistType fist = plugin.getFistManager().getPlayerFist(player);
                 if (fist == null) return;
                 
-                // Get symbol based on fist type (will be replaced by resource pack textures)
+                // Get symbol based on fist type
                 String symbol = getFistSymbol(fist);
                 
-                // Send to action bar above heart (using scoreboard or custom method)
-                // For now, using a simple method - you can use ProtocolLib for better placement
-                player.sendPlayerListHeaderFooter("§6§lFIST: " + fist.getDisplayName() + " " + symbol, "");
+                // FIXED: Using sendActionBar instead of sendPlayerListHeaderFooter
+                player.sendActionBar("§6§lFIST: " + fist.getDisplayName() + " " + symbol);
             }
         }.runTaskTimer(plugin, 0L, 100L); // Update every 5 seconds
     }
     
     private String getFistSymbol(FistType fist) {
         // These symbols will be replaced by resource pack textures
-        String fallback = plugin.getConfig().getString("resource-pack.fallback-symbol", "∆");
+        String fallback = plugin.getConfig().getString("resource-pack.fallback-symbol", "⚡");
         
         switch(fist) {
             case ORB: return "§6" + fallback;
@@ -118,6 +117,6 @@ public class JoinListener implements Listener {
                 // Spawn ambient particles continuously
                 plugin.getParticleManager().spawnIdleParticles(player, fist);
             }
-        }.runTaskTimer(plugin, 0L, 5L); // Update every 5 ticks
+        }.runTaskTimer(plugin, 0L, 5L);
     }
 }
