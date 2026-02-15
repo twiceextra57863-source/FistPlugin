@@ -19,7 +19,7 @@ public class VoidFist extends BaseAbility {
     @Override
     public boolean onRightClick(Player player) {
         // Right click - Pull target
-        LivingEntity target = getTargetEntity(player, 40);
+        final LivingEntity target = getTargetEntity(player, 40);
         if (target == null) {
             player.sendMessage("§cNo target found!");
             return false;
