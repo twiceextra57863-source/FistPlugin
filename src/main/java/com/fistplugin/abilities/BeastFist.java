@@ -19,7 +19,7 @@ public class BeastFist extends BaseAbility {
     @Override
     public boolean onRightClick(Player player) {
         // Right click - Growing damage projectile
-        Egg egg = player.launchProjectile(Egg.class);
+        final Egg egg = player.launchProjectile(Egg.class);
         egg.setVelocity(player.getLocation().getDirection().multiply(2));
         
         new BukkitRunnable() {
@@ -37,7 +37,7 @@ public class BeastFist extends BaseAbility {
             @org.bukkit.event.EventHandler
             public void onEggHit(org.bukkit.event.entity.ProjectileHitEvent event) {
                 if (event.getEntity().equals(egg) && event.getHitEntity() instanceof LivingEntity) {
-                    LivingEntity target = (LivingEntity) event.getHitEntity();
+                    final LivingEntity target = (LivingEntity) event.getHitEntity();
                     
                     new BukkitRunnable() {
                         int time = 0;
