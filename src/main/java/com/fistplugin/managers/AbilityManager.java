@@ -47,4 +47,17 @@ public class AbilityManager {
         }
         return false;
     }
+    
+    // ADD THESE METHODS
+    public int getRightClickCooldown(FistType fist) {
+        return fist.getRightClickCooldown();
+    }
+    
+    public int getCrouchClickCooldown(FistType fist) {
+        return fist.getCrouchClickCooldown();
+    }
+    
+    public Ability getAbility(FistType fist) {
+        return abilities.get(fist);
+    }
 }
