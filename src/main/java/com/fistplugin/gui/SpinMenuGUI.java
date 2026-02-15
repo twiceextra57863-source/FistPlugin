@@ -4,6 +4,7 @@ import com.fistplugin.FistPlugin;
 import com.fistplugin.data.FistType;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,7 +22,7 @@ import java.util.Random;
 public class SpinMenuGUI implements Listener {
     
     private static FistPlugin plugin;
-    private final Random random = new Random();
+    private final Random random = new Random(); // Made non-static
     
     public SpinMenuGUI(FistPlugin plugin) {
         SpinMenuGUI.plugin = plugin;
@@ -73,7 +74,7 @@ public class SpinMenuGUI implements Listener {
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 1.0f);
     }
     
-    public static void startSpinAnimation(Player player) {
+    public void startSpinAnimation(Player player) { // Made non-static
         Inventory inv = Bukkit.createInventory(null, 54, "§8⚡ §6§lSPINNING... §8⚡");
         
         // All fists icons for spinning
@@ -83,7 +84,7 @@ public class SpinMenuGUI implements Listener {
         for (int i = 0; i < 54; i++) {
             if (i >= 18 && i <= 35 && i % 9 != 0 && i % 9 != 8) {
                 // Random fist for spinning slots
-                FistType randomFist = fists[new Random().nextInt(fists.length)];
+                FistType randomFist = fists[random.nextInt(fists.length)];
                 inv.setItem(i, createFistIcon(randomFist, true));
             } else {
                 ItemStack glass = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
@@ -105,7 +106,7 @@ public class SpinMenuGUI implements Listener {
             public void run() {
                 if (ticks >= 60) { // 3 seconds
                     // Stop spinning and show result
-                    showSpinResult(player);
+                    showSpinResult(player, fists);
                     cancel();
                     return;
                 }
@@ -128,7 +129,7 @@ public class SpinMenuGUI implements Listener {
         }.runTaskTimer(plugin, 0L, 2L);
     }
     
-    private static void showSpinResult(Player player) {
+    private void showSpinResult(Player player, FistType[] fists) { // Added fists parameter
         Inventory inv = Bukkit.createInventory(null, 54, "§8⚡ §6§lYOUR PRIZE §8⚡");
         
         // Decorative border
@@ -150,7 +151,6 @@ public class SpinMenuGUI implements Listener {
         }
         
         // Get random fist
-        FistType[] fists = FistType.values();
         FistType result = fists[random.nextInt(fists.length)];
         
         // Set result in center
