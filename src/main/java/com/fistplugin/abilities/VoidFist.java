@@ -1,7 +1,6 @@
 package com.fistplugin.abilities;
 
 import com.fistplugin.FistPlugin;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -19,6 +18,7 @@ public class VoidFist extends BaseAbility {
     
     @Override
     public boolean onRightClick(Player player) {
+        // Right click - Pull target
         LivingEntity target = getTargetEntity(player, 40);
         if (target == null) {
             player.sendMessage("§cNo target found!");
@@ -28,17 +28,13 @@ public class VoidFist extends BaseAbility {
         Location playerLoc = player.getLocation();
         Location targetLoc = target.getLocation();
         
-        // Pull target towards player
         Vector pull = playerLoc.toVector().subtract(targetLoc.toVector()).normalize().multiply(2);
         target.setVelocity(pull);
         
-        // Void particles line
         spawnLineParticles(targetLoc.add(0, 1, 0), playerLoc.add(0, 1, 0), Particle.DRAGON_BREATH, 0.2);
         
-        // Damage
         target.damage(4.0, player);
         
-        // Void effect on target
         new BukkitRunnable() {
             int ticks = 0;
             
@@ -64,9 +60,9 @@ public class VoidFist extends BaseAbility {
     
     @Override
     public boolean onCrouchRightClick(Player player) {
+        // Crouch + right click - Void nova
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_WITHER_SPAWN, 1.0f, 0.5f);
         
-        // Void nova effect
         new BukkitRunnable() {
             double radius = 0;
             
@@ -77,7 +73,6 @@ public class VoidFist extends BaseAbility {
                     return;
                 }
                 
-                // Expanding circle
                 for (int i = 0; i < 360; i += 10) {
                     double rad = Math.toRadians(i);
                     double x = Math.sin(rad) * radius;
@@ -88,7 +83,6 @@ public class VoidFist extends BaseAbility {
                     player.getWorld().spawnParticle(Particle.PORTAL, particleLoc, 2, 0.1, 0.1, 0.1, 0.05);
                 }
                 
-                // Pull and damage entities
                 for (Entity entity : player.getNearbyEntities(radius, radius, radius)) {
                     if (entity instanceof LivingEntity && entity != player) {
                         Vector pull = player.getLocation().toVector()
@@ -118,6 +112,6 @@ public class VoidFist extends BaseAbility {
     
     @Override
     public String getDescription() {
-        return "Harness the power of nothingness";
+        return "§8Harness the power of nothingness";
     }
 }
