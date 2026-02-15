@@ -7,6 +7,7 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.FallingBlock;  // ADD THIS IMPORT
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -55,10 +56,8 @@ public class RealityFist extends BaseAbility {
         }
         
         player.getWorld().playSound(center, Sound.ENTITY_GENERIC_EXPLODE, 1.0f, 0.5f);
-        // FIXED: EXPLOSION_HUGE -> EXPLOSION_EMITTER
         player.getWorld().spawnParticle(Particle.EXPLOSION_EMITTER, center.clone().add(0, 3, 0), 1);
         
-        // FIXED: BLOCK_CRACK -> BLOCK
         for (int i = 0; i < 20; i++) {
             Location particleLoc = center.clone().add(
                 (Math.random() - 0.5) * 8,
@@ -120,7 +119,6 @@ public class RealityFist extends BaseAbility {
                         
                         fallingBlock.getWorld().spawnParticle(Particle.FLAME, 
                             fallingBlock.getLocation(), 5, 0.5, 0.5, 0.5, 0.02);
-                        // FIXED: SMOKE_NORMAL -> SMOKE
                         fallingBlock.getWorld().spawnParticle(Particle.SMOKE, 
                             fallingBlock.getLocation(), 3, 0.3, 0.3, 0.3, 0.01);
                     }
