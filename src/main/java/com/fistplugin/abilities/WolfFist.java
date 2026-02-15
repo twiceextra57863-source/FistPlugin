@@ -33,7 +33,7 @@ public class WolfFist extends BaseAbility {
         }
         
         // Find and freeze target
-        LivingEntity target = getTargetEntity(player, 10);
+        final LivingEntity target = getTargetEntity(player, 10);
         if (target != null) {
             target.setFreezeTicks(80); // 4 seconds
             target.setVelocity(direction.multiply(0.5));
@@ -52,7 +52,7 @@ public class WolfFist extends BaseAbility {
     @Override
     public boolean onCrouchRightClick(Player player) {
         // Crouch + right click - Summon wolf clones
-        List<ArmorStand> clones = new ArrayList<>();
+        final List<ArmorStand> clones = new ArrayList<>();
         
         for (int i = 0; i < 3; i++) {
             double angle = (2 * Math.PI / 3) * i;
