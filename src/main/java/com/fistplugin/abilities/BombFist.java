@@ -17,6 +17,7 @@ public class BombFist extends BaseAbility {
     
     @Override
     public boolean onRightClick(Player player) {
+        // Right click - Ghost bomb
         LivingEntity target = getTargetEntity(player, 30);
         if (target == null) {
             player.sendMessage("§cNo target found!");
@@ -40,8 +41,6 @@ public class BombFist extends BaseAbility {
                 
                 current.add(direction);
                 
-                // FIXED: SOUL_FIRE_FLAME -> SOUL_FIRE_FLAME (same)
-                // FIXED: SMOKE_NORMAL -> SMOKE
                 player.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME, current, 5, 0.2, 0.2, 0.2, 0.01);
                 player.getWorld().spawnParticle(Particle.SMOKE, current, 3, 0.1, 0.1, 0.1, 0.01);
                 
@@ -84,7 +83,6 @@ public class BombFist extends BaseAbility {
                     return;
                 }
                 
-                // FIXED: REDSTONE -> DUST
                 chicken.getWorld().spawnParticle(Particle.DUST, chicken.getLocation().add(0, 1, 0), 
                     10, 0.3, 0.3, 0.3, 0, new Particle.DustOptions(Color.RED, 1));
                 
@@ -95,6 +93,7 @@ public class BombFist extends BaseAbility {
     
     @Override
     public boolean onCrouchRightClick(Player player) {
+        // Crouch + right click - Laser for 13 seconds
         Location start = player.getEyeLocation();
         Vector direction = player.getLocation().getDirection().normalize();
         
@@ -103,7 +102,7 @@ public class BombFist extends BaseAbility {
             
             @Override
             public void run() {
-                if (ticks >= 130) {
+                if (ticks >= 130) { // 13 seconds
                     cancel();
                     return;
                 }
@@ -115,7 +114,6 @@ public class BombFist extends BaseAbility {
                     
                     if (!current.getBlock().getType().isAir()) {
                         current.getBlock().breakNaturally();
-                        // FIXED: EXPLOSION_NORMAL -> EXPLOSION
                         player.getWorld().spawnParticle(Particle.EXPLOSION, current, 5, 0.2, 0.2, 0.2, 0.05);
                     }
                     
@@ -127,7 +125,6 @@ public class BombFist extends BaseAbility {
                         }
                     }
                     
-                    // FIXED: REDSTONE -> DUST
                     player.getWorld().spawnParticle(Particle.DUST, current, 1, 0, 0, 0, 0, 
                         new Particle.DustOptions(Color.RED, 1));
                     
@@ -141,7 +138,7 @@ public class BombFist extends BaseAbility {
         }.runTaskTimer(plugin, 0L, 1L);
         
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_GUARDIAN_ATTACK, 1.0f, 0.5f);
-        player.sendMessage("§4🔥 Laser activated!");
+        player.sendMessage("§4🔥 Laser activated for 13 seconds!");
         
         plugin.getFistManager().getPlayerData(player).addAbilityUsed();
         return true;
@@ -154,6 +151,6 @@ public class BombFist extends BaseAbility {
     
     @Override
     public String getDescription() {
-        return "Explosive chaos and destruction";
+        return "§4Explosive chaos and destruction";
     }
 }
