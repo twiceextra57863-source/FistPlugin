@@ -27,7 +27,7 @@ public class OrbFist extends BaseAbility {
     @Override
     public boolean onRightClick(Player player) {
         // Right click ability - Fire projectile
-        Fireball fireball = player.launchProjectile(Fireball.class);
+        final Fireball fireball = player.launchProjectile(Fireball.class);
         fireball.setVelocity(player.getLocation().getDirection().multiply(2.0));
         fireball.setYield(3.0f);
         fireball.setIsIncendiary(false);
