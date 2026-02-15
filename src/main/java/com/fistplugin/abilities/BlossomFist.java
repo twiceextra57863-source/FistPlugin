@@ -20,7 +20,7 @@ public class BlossomFist extends BaseAbility {
     @Override
     public boolean onRightClick(Player player) {
         // Right click - Freeze projectile
-        Snowball snowball = player.launchProjectile(Snowball.class);
+        final Snowball snowball = player.launchProjectile(Snowball.class);
         snowball.setVelocity(player.getLocation().getDirection().multiply(2.5));
         
         new BukkitRunnable() {
@@ -39,7 +39,7 @@ public class BlossomFist extends BaseAbility {
             @org.bukkit.event.EventHandler
             public void onProjectileHit(org.bukkit.event.entity.ProjectileHitEvent event) {
                 if (event.getEntity().equals(snowball) && event.getHitEntity() instanceof LivingEntity) {
-                    LivingEntity target = (LivingEntity) event.getHitEntity();
+                    final LivingEntity target = (LivingEntity) event.getHitEntity();
                     
                     // Freeze for 4 seconds
                     target.setFreezeTicks(80);
@@ -76,7 +76,7 @@ public class BlossomFist extends BaseAbility {
     @Override
     public boolean onCrouchRightClick(Player player) {
         // Crouch + right click - Chain freeze with poison
-        LivingEntity target = getTargetEntity(player, 30);
+        final LivingEntity target = getTargetEntity(player, 30);
         if (target == null) {
             player.sendMessage("§cNo target found!");
             return false;
