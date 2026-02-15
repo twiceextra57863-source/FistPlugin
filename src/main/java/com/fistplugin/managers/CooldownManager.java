@@ -11,10 +11,12 @@ public class CooldownManager {
     
     private final FistPlugin plugin;
     private final Map<UUID, Map<String, Long>> cooldowns;
+    private final Map<UUID, Map<String, BukkitRunnable>> activeBars;
     
     public CooldownManager(FistPlugin plugin) {
         this.plugin = plugin;
         this.cooldowns = new HashMap<>();
+        this.activeBars = new HashMap<>();
     }
     
     public void setCooldown(Player player, String ability, int seconds) {
@@ -22,8 +24,80 @@ public class CooldownManager {
         playerCooldowns.put(ability, System.currentTimeMillis() + (seconds * 1000L));
         cooldowns.put(player.getUniqueId(), playerCooldowns);
         
-        // Show cooldown in action bar
-        showCooldownBar(player, ability, seconds);
+        // Cancel existing bar for this ability
+        Map<String, BukkitRunnable> playerBars = activeBars.getOrDefault(player.getUniqueId(), new HashMap<>());
+        if (playerBars.containsKey(ability)) {
+            playerBars.get(ability).cancel();
+        }
+        
+        // Show status bar
+        BukkitRunnable barTask = createStatusBar(player, ability, seconds);
+        playerBars.put(ability, barTask);
+        activeBars.put(player.getUniqueId(), playerBars);
+        barTask.runTaskTimer(plugin, 0L, 2L); // Update every 2 ticks for smooth animation
+    }
+    
+    private BukkitRunnable createStatusBar(Player player, String ability, int totalSeconds) {
+        return new BukkitRunnable() {
+            long startTime = System.currentTimeMillis();
+            long endTime = startTime + (totalSeconds * 1000L);
+            
+            @Override
+            public void run() {
+                if (!player.isOnline()) {
+                    cancel();
+                    return;
+                }
+                
+                long currentTime = System.currentTimeMillis();
+                long remaining = endTime - currentTime;
+                
+                if (remaining <= 0) {
+                    // Show ready message with resource pack symbol
+                    String symbol = plugin.getConfig().getString("resource-pack.fallback-symbol", "✔");
+                    player.sendActionBar("§a§l" + symbol + " §a" + ability + " READY! " + symbol);
+                    
+                    // Remove from active bars
+                    Map<String, BukkitRunnable> playerBars = activeBars.get(player.getUniqueId());
+                    if (playerBars != null) {
+                        playerBars.remove(ability);
+                    }
+                    cancel();
+                    return;
+                }
+                
+                // Calculate progress
+                int totalMillis = totalSeconds * 1000;
+                int elapsed = totalMillis - (int) remaining;
+                double progress = (double) elapsed / totalMillis;
+                
+                // Create status bar (20 characters long)
+                int barLength = 20;
+                int filledLength = (int) (progress * barLength);
+                
+                StringBuilder bar = new StringBuilder();
+                
+                // Filled part (█)
+                for (int i = 0; i < filledLength; i++) {
+                    bar.append("§a█");
+                }
+                
+                // Empty part (▒)
+                for (int i = filledLength; i < barLength; i++) {
+                    bar.append("§7▒");
+                }
+                
+                // Get resource pack symbol or fallback
+                String symbol = plugin.getConfig().getString("resource-pack.fallback-symbol", "⏳");
+                
+                // Time text
+                int secondsLeft = (int) Math.ceil(remaining / 1000.0);
+                String timeText = String.format(" §e%d§7s", secondsLeft);
+                
+                // Send action bar
+                player.sendActionBar("§6" + ability + " §8" + bar.toString() + timeText + " " + symbol);
+            }
+        };
     }
     
     public boolean isOnCooldown(Player player, String ability) {
@@ -47,37 +121,23 @@ public class CooldownManager {
         return (int) Math.max(0, remaining / 1000);
     }
     
-    private void showCooldownBar(Player player, String ability, int totalSeconds) {
-        new BukkitRunnable() {
-            int secondsLeft = totalSeconds;
-            
-            @Override
-            public void run() {
-                if (secondsLeft <= 0 || !player.isOnline()) {
-                    player.sendActionBar("§a✔ " + ability + " is ready!");
-                    this.cancel();
-                    return;
-                }
-                
-                // Create cooldown bar
-                StringBuilder bar = new StringBuilder("§c");
-                int filled = (int) ((secondsLeft / (double) totalSeconds) * 20);
-                
-                for (int i = 0; i < 20; i++) {
-                    if (i < filled) {
-                        bar.append("█");
-                    } else {
-                        bar.append("§7░");
-                    }
-                }
-                
-                player.sendActionBar("§6" + ability + " §8" + bar.toString() + " §e" + secondsLeft + "s");
-                secondsLeft--;
-            }
-        }.runTaskTimer(plugin, 0L, 20L);
-    }
-    
     public void clearCooldowns(Player player) {
         cooldowns.remove(player.getUniqueId());
+        
+        // Cancel all active bars
+        Map<String, BukkitRunnable> playerBars = activeBars.remove(player.getUniqueId());
+        if (playerBars != null) {
+            playerBars.values().forEach(BukkitRunnable::cancel);
+        }
+    }
+    
+    public void clearAllCooldowns() {
+        cooldowns.clear();
+        
+        // Cancel all active bars
+        for (Map<String, BukkitRunnable> playerBars : activeBars.values()) {
+            playerBars.values().forEach(BukkitRunnable::cancel);
+        }
+        activeBars.clear();
     }
 }
