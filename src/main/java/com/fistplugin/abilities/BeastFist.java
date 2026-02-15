@@ -1,10 +1,11 @@
 package com.fistplugin.abilities;
 
 import com.fistplugin.FistPlugin;
-import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Egg;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -27,7 +28,6 @@ public class BeastFist extends BaseAbility {
                     cancel();
                     return;
                 }
-                
                 egg.getWorld().spawnParticle(Particle.ANGRY_VILLAGER, egg.getLocation(), 1, 0.1, 0.1, 0.1, 0);
             }
         }.runTaskTimer(plugin, 0L, 1L);
@@ -51,11 +51,10 @@ public class BeastFist extends BaseAbility {
                             double damage = 2.0 + (time * 2.0);
                             target.damage(damage, player);
                             
-                            // Visual effect
-                            target.getWorld().spawnParticle(Particle.EXPLOSION_NORMAL, 
+                            // FIXED: EXPLOSION_NORMAL -> EXPLOSION
+                            target.getWorld().spawnParticle(Particle.EXPLOSION, 
                                 target.getLocation().add(0, 1, 0), 20, 0.5, 1.0, 0.5, 0.1);
                             
-                            // Sound
                             target.getWorld().playSound(target.getLocation(), 
                                 Sound.ENTITY_RAVAGER_ROAR, 0.5f, 0.5f + (time * 0.2f));
                             
@@ -72,14 +71,11 @@ public class BeastFist extends BaseAbility {
     
     @Override
     public boolean onCrouchRightClick(Player player) {
-        // Visual shrink effect
         player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1.0f, 1.5f);
         
-        // Effects
         player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, 200, 0));
         player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 200, 2));
         
-        // Particle effect
         new BukkitRunnable() {
             int ticks = 0;
             
@@ -90,7 +86,8 @@ public class BeastFist extends BaseAbility {
                     return;
                 }
                 
-                player.getWorld().spawnParticle(Particle.SPELL_MOB, 
+                // FIXED: SPELL_MOB -> ENTITY_EFFECT
+                player.getWorld().spawnParticle(Particle.ENTITY_EFFECT, 
                     player.getLocation().add(0, 0.5, 0), 5, 0.2, 0.2, 0.2, 0);
                 ticks += 5;
             }
