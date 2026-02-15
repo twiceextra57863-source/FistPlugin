@@ -1,7 +1,7 @@
 package com.fistplugin.utils;
 
 import com.fistplugin.FistPlugin;
-import com.fistplugin.data.FistType;
+import com.fistplugin.data.FistType;  // YEH IMPORT MISSING THA
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -84,7 +84,7 @@ public class MessageUtils {
             return new Placeholder("player", player.getName());
         }
         
-        public static Placeholder fist(FistType fist) {
+        public static Placeholder fist(FistType fist) {  // YEH LINE 187 HAI
             return new Placeholder("fist", fist != null ? fist.getDisplayName() : "None");
         }
         
