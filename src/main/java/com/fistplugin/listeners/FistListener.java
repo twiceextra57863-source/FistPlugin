@@ -5,9 +5,10 @@ import com.fistplugin.data.FistType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 public class FistListener implements Listener {
     
@@ -19,52 +20,60 @@ public class FistListener implements Listener {
     
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (!event.getAction().name().contains("RIGHT_CLICK")) return;
+        // Only handle right clicks, ignore left clicks
+        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+        
+        // Only handle main hand (off hand ko ignore karo)
+        if (event.getHand() != EquipmentSlot.HAND) {
+            return;
+        }
         
         Player player = event.getPlayer();
         FistType fist = plugin.getFistManager().getPlayerFist(player);
         
         if (fist == null) return;
         
+        // Check if player is sneaking (crouch)
         boolean isCrouching = player.isSneaking();
         
+        // Cancel event to prevent interaction with blocks/items
+        event.setCancelled(true);
+        
         if (isCrouching) {
-            // Check cooldown for crouch ability
+            // Crouch right click ability
             String cooldownKey = fist.name() + "_CROUCH";
+            int cooldown = plugin.getAbilityManager().getCrouchClickCooldown(fist);
+            
             if (plugin.getCooldownManager().isOnCooldown(player, cooldownKey)) {
                 int remaining = plugin.getCooldownManager().getRemainingCooldown(player, cooldownKey);
                 player.sendMessage("§c⏳ Crouch ability on cooldown! " + remaining + "s remaining");
                 return;
             }
             
-            // Execute crouch ability
             boolean success = plugin.getAbilityManager().executeCrouchRightClick(player, fist);
             
             if (success) {
-                // Set cooldown
-                plugin.getCooldownManager().setCooldown(player, cooldownKey, fist.getCrouchClickCooldown());
-                
-                // Play sound and particles
+                plugin.getCooldownManager().setCooldown(player, cooldownKey, cooldown);
                 player.getWorld().playSound(player.getLocation(), fist.getSound(), 1.0f, 1.2f);
                 plugin.getParticleManager().spawnFistParticles(player, fist);
             }
         } else {
-            // Check cooldown for right click ability
+            // Normal right click ability
             String cooldownKey = fist.name() + "_RIGHT";
+            int cooldown = plugin.getAbilityManager().getRightClickCooldown(fist);
+            
             if (plugin.getCooldownManager().isOnCooldown(player, cooldownKey)) {
                 int remaining = plugin.getCooldownManager().getRemainingCooldown(player, cooldownKey);
                 player.sendMessage("§c⏳ Ability on cooldown! " + remaining + "s remaining");
                 return;
             }
             
-            // Execute right click ability
             boolean success = plugin.getAbilityManager().executeRightClick(player, fist);
             
             if (success) {
-                // Set cooldown
-                plugin.getCooldownManager().setCooldown(player, cooldownKey, fist.getRightClickCooldown());
-                
-                // Play sound and particles
+                plugin.getCooldownManager().setCooldown(player, cooldownKey, cooldown);
                 player.getWorld().playSound(player.getLocation(), fist.getSound(), 1.0f, 1.0f);
                 plugin.getParticleManager().spawnFistParticles(player, fist);
             }
